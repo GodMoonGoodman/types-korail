@@ -10,5 +10,3 @@ import secrets from '../secrets.json'
 
   console.log(results)
 })()
-
-

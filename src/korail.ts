@@ -1,8 +1,9 @@
 import Axios, { AxiosInstance } from 'axios'
-import { LoginPayload } from './index'
+import { LoginPayload, trainResponse } from './index'
 import { KORAIL_SEARCH_SCHEDULE, KORAIL_LOGIN, DEFAULT_USER_AGENT } from './url'
 import FormData from 'form-data'
 import { date2string } from './helper/dateParser'
+import Train from './train'
 
 class Korail {
   korailID: String
@@ -82,7 +83,16 @@ class Korail {
       Version: this._version
     }
 
-    const { data } = await Axios.request({
+    interface response {
+      data: {
+        strResult: string,
+        trn_infos: {
+          trn_info: Array<trainResponse>
+        }
+      }
+    }
+
+    const { data }: response = await Axios.request({
       method: 'get',
       url: KORAIL_SEARCH_SCHEDULE,
       headers: {
@@ -93,14 +103,15 @@ class Korail {
     })
 
     if (data['strResult'] === 'SUCC') {
-      return data.trn_infos.trn_info
+
+      return data.trn_infos.trn_info.map(train => new Train(train))
     }
 
     return []
 
   }
 
-  async reserve() {
+  async reserve(train: Train) {
 
   }
 }
