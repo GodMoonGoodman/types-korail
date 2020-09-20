@@ -4,7 +4,22 @@ export interface LoginPayload {
 
 
 export interface trainResponse {
-  h_rsv_psb_flg: string
+  h_rsv_psb_flg: string // 예약 가능 여부
+  h_expct_dlay_hr: string // 지연시간
+
+  h_dpt_dt: string // 출발 날짜 ex) 20200920
+  h_dpt_tm: string // 출발 시간 ex) 140530 -> 14시 5분 30초
+  h_dpt_rs_stn_cd: string // 출발역?
+
+  h_arv_dt: string // 도착 날짜
+  h_arv_tm: string // 도착 시간
+  h_arv_rs_stn_cd: string // 도착역?
+  
+
+  h_trn_no: string
+  h_run_dt: string
+  h_trn_clsf_cd: string
+  h_trn_gp_cd: string
 }
 
 

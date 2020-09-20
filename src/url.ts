@@ -8,3 +8,4 @@ export const KORAIL_DOMAIN = `${SCHEME}://${KORAIL_HOST}:${KORAIL_PORT}`
 export const KORAIL_MOBILE = `${KORAIL_DOMAIN}/classes/com.korail.mobile`
 export const KORAIL_LOGIN = `${KORAIL_MOBILE}.login.Login`
 export const KORAIL_SEARCH_SCHEDULE = `${KORAIL_MOBILE}.seatMovie.ScheduleView`
+export const KORAIL_TICKETRESERVATION = `${KORAIL_MOBILE}.certification.TicketReservation`

@@ -1,6 +1,6 @@
 import Axios, { AxiosInstance } from 'axios'
 import { LoginPayload, trainResponse } from './index'
-import { KORAIL_SEARCH_SCHEDULE, KORAIL_LOGIN, DEFAULT_USER_AGENT } from './url'
+import { KORAIL_SEARCH_SCHEDULE, KORAIL_LOGIN, DEFAULT_USER_AGENT, KORAIL_TICKETRESERVATION } from './url'
 import FormData from 'form-data'
 import { date2string } from './helper/dateParser'
 import Train from './train'
@@ -9,7 +9,8 @@ class Korail {
   korailID: String
   korailPW: String
   autoLogin: Boolean
-  
+
+  cookies = []
   logedIn =  false
 
   _device = 'AD'
@@ -38,7 +39,7 @@ class Korail {
     payload.append('txtPwd', korailPW);
 
   
-    const { data } = await Axios.request({
+    const { data, headers } = await Axios.request({
       method: 'post',
       url: KORAIL_LOGIN,
       headers: {
@@ -50,6 +51,8 @@ class Korail {
     })
 
     if (data.strResult === 'SUCC' && 'strMbCrdNo' in data) {
+      this.cookies = headers['set-cookie']
+      this._key = data.Key
       this.logedIn = true
     }
 
@@ -103,7 +106,7 @@ class Korail {
     })
 
     if (data['strResult'] === 'SUCC') {
-
+      console.log(data.trn_infos.trn_info)
       return data.trn_infos.trn_info.map(train => new Train(train))
     }
 
@@ -112,8 +115,68 @@ class Korail {
   }
 
   async reserve(train: Train) {
+    const params = {
+      Device: this._device,
+      Key: this._key,
+      Version: this._version,
+      txtGdNo: '',
+      txtJobId: '1101',
+      txtTotPsgCnt: 1,
+      txtSeatAttCd1: '000',
+      txtSeatAttCd2: '000',
+      txtSeatAttCd3: '000',
+      txtSeatAttCd4: '015',
+      txtSeatAttCd5: '000',
+      hidFreeFlg: 'N',
+      txtStndFlg: 'N',
+      txtMenuId: '11',
+      txtSrcarCnt: '0',
+      txtJrnyCnt: '1',
 
+
+      // 이하 여정정보1
+      txtJrnySqno1: '001',
+      txtJrnyTpCd1: '11',
+      txtDptDt1: train.dep_date,
+      txtDptRsStnCd1: train.dep_code,
+      txtDptTm1: train.dep_time,
+      txtArvRsStnCd1: train.arr_code,
+      txtTrnNo1: train.train_no,
+      txtRunDt1: train.run_date,
+      txtTrnClsfCd1: train.train_type,
+      txtPsrmClCd1: '1', // 일반석 온리
+      txtTrnGpCd1: train.train_group,
+      txtChgFlg1: '',
+
+      txtPsgTpCd1: '1',
+      txtDiscKndCd1: '000',
+      txtCompaCnt1: '1',
+      txtCardCode_1: '',
+      txtCardNo_1: '',
+      txtCardPw_1: ''
+
+      // 이하 txtTotPsgCnt 만큼 반복
+      // # 'txtPsgTpCd1'    : '1',   #손님 종류 (어른, 어린이)
+      // # 'txtDiscKndCd1'  : '000', #할인 타입 (경로, 동반유아, 군장병 등..)
+      // # 'txtCompaCnt1'   : '1',   #인원수
+      // # 'txtCardCode_1'  : '',
+      // # 'txtCardNo_1'    : '',
+      // # 'txtCardPw_1'    : '',
+    }
+
+    const { data } = await Axios.request({
+      method: 'get',
+      url: KORAIL_TICKETRESERVATION,
+      headers: {
+        'Content-Type': 'application/json', 
+        'User-Agent': DEFAULT_USER_AGENT,
+        'cookie': this.cookies[0]
+      },
+      params
+    })
+    console.log(data)
   }
+
 }
 
 
