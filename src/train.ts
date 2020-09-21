@@ -1,5 +1,5 @@
 import { trainResponse } from './index'
-
+import { string2dateString } from './helper/dateParser'
 class Train {
   reservePossible = false // 예약 가능여부
   delay_time: string
@@ -18,7 +18,11 @@ class Train {
   train_type: string
   train_group: string
 
+  raw_data: any
+
   constructor(train: trainResponse) {
+    this.raw_data = train
+
     const { 
       h_rsv_psb_flg,
       h_expct_dlay_hr,
@@ -58,6 +62,9 @@ class Train {
   }
 }
 
-
+Train.prototype.toString = function () {
+  const { h_trn_gp_nm, h_dpt_rs_stn_nm, h_arv_rs_stn_nm, h_dpt_tm_qb, h_arv_tm_qb } = this.raw_data
+  return `[${h_trn_gp_nm}] ${string2dateString(this.dep_date)} ${h_dpt_rs_stn_nm}~${h_arv_rs_stn_nm}(${h_dpt_tm_qb}~${h_arv_tm_qb})`
+}
 
 export default Train

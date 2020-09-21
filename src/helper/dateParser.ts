@@ -12,3 +12,10 @@ export const date2string: (date: Date) => string = date => {
 
   return `${year}${month}${day}`
 }
+
+export const string2dateString: (YMD: string) => string = YMD => {
+  const year = YMD.substr(0,4)
+  const month = YMD.substr(4,2)
+  const date = YMD.substr(6,2)
+  return `${month}월 ${date}일`
+}

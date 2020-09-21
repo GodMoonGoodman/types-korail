@@ -1,9 +1,10 @@
-import Axios, { AxiosInstance } from 'axios'
-import { LoginPayload, trainResponse } from './index'
+import Axios from 'axios'
+import { trainResponse } from './index'
 import { KORAIL_SEARCH_SCHEDULE, KORAIL_LOGIN, DEFAULT_USER_AGENT, KORAIL_TICKETRESERVATION } from './url'
 import FormData from 'form-data'
 import { date2string } from './helper/dateParser'
 import Train from './train'
+export { default as SeatType } from './seatType'
 
 class Korail {
   korailID: String
@@ -59,7 +60,7 @@ class Korail {
     return this.logedIn
   }
 
-  async searchTrain(departure: string, arrival: string, date: Date) {
+  async searchTrain(departure: string, arrival: string, date: Date, seatType: string = '015') {
 
 
     const params = {
@@ -81,7 +82,7 @@ class Korail {
       txtPsgFlg_5: 0, // 장애인2
       txtSeatAttCd_2: '000',
       txtSeatAttCd_3: '000',
-      txtSeatAttCd_4: '015',
+      txtSeatAttCd_4: seatType, // 일반석
       txtTrnGpCd: '109',
       Version: this._version
     }
